@@ -26,11 +26,7 @@ func NewSender(
 		return nil, errors.New("require copy manager")
 	}
 
-	return &Sender{
-		addr,
-		manager,
-		heartbeatInterval,
-	}, nil
+	return &Sender{addr, manager, heartbeatInterval}, nil
 }
 
 func (s *Sender) Start(group *sync.WaitGroup) {
@@ -38,12 +34,11 @@ func (s *Sender) Start(group *sync.WaitGroup) {
 	if err != nil {
 		panic(err)
 	}
-	defer group.Done()
-	defer func(conn *net.UDPConn) {
-		_ = conn.Close()
-	}(conn)
-	fmt.Println("sender work")
 
+	defer func(conn *net.UDPConn) { _ = conn.Close() }(conn)
+	defer group.Done()
+
+	fmt.Println("sender work")
 	for {
 		_, err := conn.Write([]byte{})
 		if err != nil {

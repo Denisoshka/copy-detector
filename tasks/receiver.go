@@ -23,11 +23,7 @@ func NewReceiver(
 		return nil, errors.New("require copy manager")
 	}
 
-	return &Receiver{
-		addr,
-		manager,
-	}, nil
-
+	return &Receiver{addr, manager}, nil
 }
 
 func (r *Receiver) Start(group *sync.WaitGroup) {
@@ -36,19 +32,16 @@ func (r *Receiver) Start(group *sync.WaitGroup) {
 		panic(err)
 	}
 
-	defer func(conn *net.UDPConn) {
-		_ = conn.Close()
-	}(conn)
+	defer func(conn *net.UDPConn) { _ = conn.Close() }(conn)
 	defer group.Done()
 
 	buf := make([]byte, 1024)
-	manager := r.manager
 	fmt.Println("receiver work")
 	for {
 		_, src, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			panic(err)
 		}
-		manager.update(src.String())
+		r.manager.update(src.String())
 	}
 }

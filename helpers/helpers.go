@@ -13,11 +13,11 @@ func ParseFlags() (host string, port int, err error) {
 	flag.IntVar(&port, "port", -1, "Multicast group port")
 	flag.Parse()
 
-	portCheck := isCorrectPort(port)
+	portCheck := IsCorrectPort(port)
 	if portCheck != nil {
 		return "", 0, portCheck
 	}
-	addrCheck := isCorrectAddress(host)
+	addrCheck := IsCorrectAddress(host)
 	if addrCheck != nil {
 		return "", 0, addrCheck
 	}
@@ -33,7 +33,7 @@ func UpdateConsole(data map[string]time.Time) {
 	}
 }
 
-func isCorrectAddress(addr string) error {
+func IsCorrectAddress(addr string) error {
 	_, err := net.ResolveIPAddr("ip", addr)
 	if err != nil {
 		return err
@@ -41,7 +41,7 @@ func isCorrectAddress(addr string) error {
 	return nil
 }
 
-func isCorrectPort(port int) error {
+func IsCorrectPort(port int) error {
 	if port == -1 {
 		return errors.New("port not specified")
 	}

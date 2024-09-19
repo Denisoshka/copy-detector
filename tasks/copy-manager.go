@@ -21,12 +21,14 @@ func NewCopyManager(expiredCheckTimeout time.Duration) *CopyManager {
 }
 
 func (cm *CopyManager) update(copy string) {
-	defer cm.mutex.Unlock()
 	cm.mutex.Lock()
+	defer cm.mutex.Unlock()
 	cm.data[copy] = time.Now().UTC()
 }
 
 func (cm *CopyManager) remove(copy string) {
+	cm.mutex.Lock()
+	defer cm.mutex.Unlock()
 	delete(cm.data, copy)
 }
 
